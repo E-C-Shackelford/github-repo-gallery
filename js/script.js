@@ -1,6 +1,8 @@
 // select the div with a class of “overview”
 const overview = document.querySelector(".overview");
 const username = "E-C-Shackelford";
+// select the unordered list to display the repos list
+const reposList = document.querySelector(".repo-list");
 
 // ***** FETCH API JSON DATA *****
 
@@ -21,7 +23,7 @@ const displayUserInfo = function (data) {
   div.classList.add("user-info");
   // populate the div with the elements for figure, image, and paragraphs
   // inside the placeholders, use the JSON data to grab the relevant properties to display on the page
-  div.innerHTMl = `
+  div.innerHTML = `
     <figure>
       <img alt="user avatar" src=${data.avatar_url} />
     </figure>
@@ -33,4 +35,34 @@ const displayUserInfo = function (data) {
     </div>
     `;
   overview.append(div);
+  githubRepos();
+};
+
+// ***** FETCH REPOS *****
+
+const githubRepos = async function () {
+  // find parameters to sort repos by the most recently updated to last updated as well as show up to 100 repos per page at a time
+  const fetchRepos = await fetch(
+    `https://api.github.com/users/${username}/repos?sort=updated&per_page=100`
+  );
+  // return the JSON response data for the repos
+  const repoResponse = await fetchRepos.json();
+  // console.log(repoResponse);
+  displayRepos(repoResponse);
+};
+// githubRepos();  // confirmed it's fetching repositories, so commented out the call to the function — this step is needed to look through the properties
+
+// display info regarding each repos
+// ensure the function accepts the data returned from the last API call by passing the function repos as a parameter
+const displayRepos = function (repos) {
+  // loop and create a list item for each repo
+  for (const repo of repos) {
+    const li = document.createElement("li");
+    // add the "repo" class to each item
+    li.classList.add(".repo");
+    // add an <h3> element with the repo name to each item
+    li.innerHTML = `<h3>${repo.name}</h3>`;
+    // append the list item to the global variable selecting the unordered repos list
+    reposList.append(li);
+  }
 };
