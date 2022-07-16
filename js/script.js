@@ -69,7 +69,7 @@ const displayRepos = function (repos) {
   for (const repo of repos) {
     const li = document.createElement("li");
     // add the "repo" class to each item
-    li.classList.add(".repo");
+    li.classList.add("repo");
     // add an <h3> element with the repo name to each item
     li.innerHTML = `<h3>${repo.name}</h3>`;
     // append the list item to the global variable selecting the unordered repos list
