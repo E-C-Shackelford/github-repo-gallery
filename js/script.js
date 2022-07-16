@@ -7,6 +7,10 @@ const reposList = document.querySelector(".repo-list");
 const reposSection = document.querySelector(".repos");
 // select section with “repo-data” class where individual repo data appears
 const repoDataSection = document.querySelector(".repo-data");
+// select Back to Repo Gallery button
+const backButton = document.querySelector(".view-repos");
+// select input with “Search by name” placeholder
+const filterInput = document.querySelector(".filter-repos");
 
 // ***** FETCH API JSON DATA *****
 
@@ -59,6 +63,8 @@ const githubRepos = async function () {
 // display info regarding each repos
 // ensure the function accepts the data returned from the last API call by passing the function repos as a parameter
 const displayRepos = function (repos) {
+  // display the input element
+  filterInput.classList.remove("hide");
   // loop and create a list item for each repo
   for (const repo of repos) {
     const li = document.createElement("li");
@@ -70,6 +76,8 @@ const displayRepos = function (repos) {
     reposList.append(li);
   }
 };
+
+// ***** DISPLAY REPO INFO *****
 
 reposList.addEventListener("click", function (e) {
   // check if the event target (the element on which one clicks) matches the <h3> element (repo name)
@@ -119,4 +127,37 @@ const displaySpecificInfo = function (repoInfo, languages) {
   repoDataSection.append(div);
   repoDataSection.classList.remove("hide");
   reposSection.classList.add("hide");
+  backButton.classList.remove("hide"); // a user will see the "Back to Repo Gallery" button when clicking on a repo, allowing a user to click on the back button and return to the complete list of repos (the specific repo info and back button will then disappear)
 };
+
+// ***** CREATE A DYNAMIC SEARCH *****
+
+backButton.addEventListener("click", function () {
+  reposSection.classList.remove("hide");
+  repoDataSection.classList.add("hide");
+  backButton.classList.add("hide");
+});
+
+// dynamic search
+filterInput.addEventListener("input", function (e) {
+  // capture the value of the search text
+  const searchText = e.target.value;
+  // console.log(searchText);
+
+  // select all the elements on the page with a “repo” class
+  const repos = document.querySelectorAll(".repo");
+  // assign a variable to the lowercase value of the search text
+  const lowercaseSearchText = searchText.toLowerCase();
+
+  for (const repo of repos) {
+    // assign a variable to the lowercase value of the innerText of each repo
+    const lowercaseRepoText = repo.innerText.toLowerCase();
+    // does the lowercase repo text include the lowercase search text?
+    if (lowercaseRepoText.includes(lowercaseSearchText)) {
+      // if the repo contains the text, show the repo, and if it doesn’t contain the text, hide the repo
+      repo.classList.remove("hide");
+    } else {
+      repo.classList.add("hide");
+    }
+  }
+});
